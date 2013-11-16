@@ -11,7 +11,7 @@ import strutils
 
 
 proc parseAll*(csv : string, filenameOut : string, separator : char = ',', quote : char = '\"', escape : char = '\0', skipInitialSpace : bool = true): seq[seq[string]] = 
-    ## Parses the CSV and returns it as a sequence of sequences. filenameOut is only used for error messages.
+    ## Parses the CSV and returns it as a sequence of sequences. filenameOut is only used for error messages. See Nimrod's parsecsv docs for information on other parameters.
     
     # Put the CSV into a stream.
     var stream : PStringStream = newStringStream(csv)
@@ -38,7 +38,7 @@ proc parseAll*(csv : string, filenameOut : string, separator : char = ',', quote
 
 
 proc readAll*(filename : string, filenameOut : string, separator : char = ',', quote : char = '\"', escape : char = '\0', skipInitialSpace : bool = true): seq[seq[string]] = 
-    ## Reads the CSV from the file, parses it, and returns it as a sequence of sequences. filenameOut is only used for error messages.
+    ## Reads the CSV from the file, parses it, and returns it as a sequence of sequences. filenameOut is only used for error messages. See Nimrod's parsecsv docs for information on other parameters.
     
     # Get the data from the file.
     var csv : string = readFile(filename)
@@ -47,10 +47,58 @@ proc readAll*(filename : string, filenameOut : string, separator : char = ',', q
     return parseAll(csv, filenameOut, separator = separator, quote = quote, escape = escape, skipInitialSpace = skipInitialSpace)
 
 
-proc stringifyAll*(csv : seq[seq[string]]): string = 
-    ## Converts the CSV to a string and returns it.
+proc stringifyAll*(csv : seq[seq[string]], escapeQuotes : bool = true, quoteAlways : bool = false): string = 
+    ## Converts the CSV to a string and returns it. If escapeQuotes is true, then " will be replaced with \" and ' will be replaced with \'. If quoteAlways is true,
+    ## it will always add quotes around the item. If it is false, then quotes will only be added if the item contains quotes or whitespace.
+    
+    # Loop through the sequence and append the rows to the string.
+    var csvStr : string = ""
+    for i in 0..high(csv):
+        
+        var csvStrRow : string = ""
+        for j in 0..high(csv[i]):
+            
+            # Escape the quotes, if the user wants that.
+            var item : string = csv[i][j]
+            if escapeQuotes and (item.contains("\"") or item.contains("'")):
+                item = item.replace("\"", "\\\"").replace("'", "\\'")
+                
+            # Quote always if the user wants that, otherwise only do it if necessary.
+            if quoteAlways:
+                item = "\"" & item & "\""
+            elif item.contains("\"") or item.contains("'"):
+                item = "\"" & item & "\""
+            else:
+                item = item.quoteIfContainsWhite()
+            
+            # Add the item.
+            csvStrRow &= item
+            
+            # Only add a comma if it isn't the last item.
+            if j != high(csv[i]):
+                csvStrRow &= ", "
+        
+        # Add the row.
+        csvStr &= csvStrRow
+        
+        # Only add a newline if it isn't the last row.
+        if i != high(csv):
+            csvStr &= "\n"
+    
+    # Return the stringified CSV.
+    return csvStr
 
 
-proc writeAll*(filename : string, csv : seq[seq[string]]): string = 
-    ## Converts the CSV to a string and writes it to the file. Returns the CSV as a string.
-
+proc writeAll*(filename : string, csv : seq[seq[string]], escapeQuotes : bool = true, quoteAlways : bool = false): string = 
+    ## Converts the CSV to a string and writes it to the file. Returns the CSV as a string. If escapeQuotes is true, then " will be replaced with \" and
+    ## ' will be replaced with \'. If quoteAlways is true, it will always add quotes around the item. If it is false, then quotes will only be added if
+    ## the item contains quotes or whitespace.
+    
+    # Get the stringified CSV.
+    var csvStr : string = stringifyAll(csv, escapeQuotes = escapeQuotes, quoteAlways = quoteAlways)
+    
+    # Write the CSV to the file.
+    writeFile(filename, csvStr)
+    
+    # Return the stringified CSV.
+    return csvStr
