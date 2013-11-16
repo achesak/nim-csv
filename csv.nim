@@ -37,8 +37,14 @@ proc parseAll*(csv : string, filenameOut : string, separator : char = ',', quote
     return csvSeq
 
 
-proc readAll*(filename : string, filenameOut : string, skipInitialSpace : bool = true): seq[seq[string]] = 
+proc readAll*(filename : string, filenameOut : string, separator : char = ',', quote : char = '\"', escape : char = '\0', skipInitialSpace : bool = true): seq[seq[string]] = 
     ## Reads the CSV from the file, parses it, and returns it as a sequence of sequences. filenameOut is only used for error messages.
+    
+    # Get the data from the file.
+    var csv : string = readFile(filename)
+    
+    # Send the string to parseAll() to parse the CSV.
+    return parseAll(csv, filenameOut, separator = separator, quote = quote, escape = escape, skipInitialSpace = skipInitialSpace)
 
 
 proc stringifyAll*(csv : seq[seq[string]]): string = 
@@ -48,5 +54,3 @@ proc stringifyAll*(csv : seq[seq[string]]): string =
 proc writeAll*(filename : string, csv : seq[seq[string]]): string = 
     ## Converts the CSV to a string and writes it to the file. Returns the CSV as a string.
 
-
-var data = "Type, Primary Text, Name, Description, Owner\nMyRequirementType, \"The vehicle must have two wheels.\", \"Vehicle wheels\", \"This requirement defines the rules for vehicles\", \"Joe Blogs\""
