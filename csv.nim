@@ -1,4 +1,4 @@
-# Nimrod CSV module.
+# Nim CSV module.
 
 # Written by Adam Chesak.
 # Code released under the MIT open source license.
@@ -11,13 +11,15 @@ import strutils
 
 
 proc parseAll*(csv : string, filenameOut : string, separator : char = ',', quote : char = '\"', escape : char = '\0', skipInitialSpace : bool = true): seq[seq[string]] = 
-    ## Parses the CSV and returns it as a sequence of sequences. filenameOut is only used for error messages. See Nimrod's parsecsv docs for information on other parameters.
+    ## Parses the CSV and returns it as a sequence of sequences.
+    ##
+    ## ``filenameOut`` is only used for error messages. See Nim's ``parsecsv`` docs for information on other parameters.
     
     # Put the CSV into a stream.
-    var stream : PStringStream = newStringStream(csv)
+    var stream : StringStream = newStringStream(csv)
     
     # Create the CSV parser.
-    var csvParser : TCsvParser
+    var csvParser : CsvParser
     csvParser.open(stream, filenameOut, skipInitialSpace = skipInitialSpace, separator = separator, quote = quote, escape = escape)
     
     # Create the return sequence.
@@ -38,7 +40,9 @@ proc parseAll*(csv : string, filenameOut : string, separator : char = ',', quote
 
 
 proc readAll*(filename : string, filenameOut : string, separator : char = ',', quote : char = '\"', escape : char = '\0', skipInitialSpace : bool = true): seq[seq[string]] = 
-    ## Reads the CSV from the file, parses it, and returns it as a sequence of sequences. filenameOut is only used for error messages. See Nimrod's parsecsv docs for information on other parameters.
+    ## Reads the CSV from the file, parses it, and returns it as a sequence of sequences.
+    ##
+    ## ``filenameOut`` is only used for error messages. See Nim's ``parsecsv`` docs for information on other parameters.
     
     # Get the data from the file.
     var csv : string = readFile(filename)
@@ -48,8 +52,10 @@ proc readAll*(filename : string, filenameOut : string, separator : char = ',', q
 
 
 proc stringifyAll*(csv : seq[seq[string]], escapeQuotes : bool = true, quoteAlways : bool = false): string = 
-    ## Converts the CSV to a string and returns it. If escapeQuotes is true, then " will be replaced with \" and ' will be replaced with \'. If quoteAlways is true,
-    ## it will always add quotes around the item. If it is false, then quotes will only be added if the item contains quotes or whitespace.
+    ## Converts the CSV to a string and returns it.
+    ##
+    ## If ``escapeQuotes`` is ``true``, then ``"`` will be replaced with ``\"`` and ``'`` will be replaced with ``\'``. If ``quoteAlways`` is ``true``,
+    ## it will always add quotes around the item. If it is ``false``, then quotes will only be added if the item contains quotes or whitespace.
     
     # Loop through the sequence and append the rows to the string.
     var csvStr : string = ""
@@ -90,9 +96,10 @@ proc stringifyAll*(csv : seq[seq[string]], escapeQuotes : bool = true, quoteAlwa
 
 
 proc writeAll*(filename : string, csv : seq[seq[string]], escapeQuotes : bool = true, quoteAlways : bool = false): string = 
-    ## Converts the CSV to a string and writes it to the file. Returns the CSV as a string. If escapeQuotes is true, then " will be replaced with \" and
-    ## ' will be replaced with \'. If quoteAlways is true, it will always add quotes around the item. If it is false, then quotes will only be added if
-    ## the item contains quotes or whitespace.
+    ## Converts the CSV to a string and writes it to the file. Returns the CSV as a string.
+    ##
+    ## If ``escapeQuotes`` is ``true``, then ``"`` will be replaced with ``\"`` and ``'`` will be replaced with ``\'``. If ``quoteAlways`` is ``true``,
+    ## it will always add quotes around the item. If it is ``false``, then quotes will only be added if the item contains quotes or whitespace.
     
     # Get the stringified CSV.
     var csvStr : string = stringifyAll(csv, escapeQuotes = escapeQuotes, quoteAlways = quoteAlways)

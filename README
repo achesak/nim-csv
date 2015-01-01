@@ -1,9 +1,9 @@
 ---- About ----
 
-nimrod-csv is a Nimrod module for working with CSV (comma separated values) files.
+nim-csv is a Nim module for working with CSV (comma separated values) files.
 
 See the documentation.html file for documentation.
 
 ---- License ----
 
-nimrod-csv is released under the MIT open source license.
+nim-csv is released under the MIT open source license.
