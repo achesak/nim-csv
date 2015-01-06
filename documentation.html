@@ -1157,13 +1157,15 @@ dt pre > span.Operator ~ span.Identifier, dt pre > span.Operator ~ span.Operator
 <li>
   <a class="reference reference-toplevel" href="#12" id="62">Procs</a>
   <ul class="simple simple-toc-section">
-      <li><a class="reference" href="#parseAll,string,string,char,char,char,bool"
+      <li><a class="reference" href="#parseAll,string,string,char,char,char,bool,bool"
     title="parseAll*(csv: string; filenameOut: string; separator: char = &#x27;,&#x27;; 
-          quote: char = &#x27;\&quot;&#x27;; escape: char = &#x27;\0&#x27;; skipInitialSpace: bool = true): seq[
+          quote: char = &#x27;\&quot;&#x27;; escape: char = &#x27;\0&#x27;; 
+          skipInitialSpace: bool = false; skipBlankLast: bool = false): seq[
     seq[string]]"><wbr />parse<wbr />All</a></li>
-  <li><a class="reference" href="#readAll,string,string,char,char,char,bool"
+  <li><a class="reference" href="#readAll,string,string,char,char,char,bool,bool"
     title="readAll*(filename: string; filenameOut: string; separator: char = &#x27;,&#x27;; 
-         quote: char = &#x27;\&quot;&#x27;; escape: char = &#x27;\0&#x27;; skipInitialSpace: bool = true): seq[
+         quote: char = &#x27;\&quot;&#x27;; escape: char = &#x27;\0&#x27;; 
+         skipInitialSpace: bool = false; skipBlankLast: bool = false): seq[
     seq[string]]"><wbr />read<wbr />All</a></li>
   <li><a class="reference" href="#stringifyAll,seq[seq[string]],bool,bool"
     title="stringifyAll*(csv: seq[seq[string]]; escapeQuotes: bool = true; 
@@ -1188,21 +1190,23 @@ dt pre > span.Operator ~ span.Identifier, dt pre > span.Operator ~ span.Operator
 <div class="section" id="12">
 <h1><a class="toc-backref" href="#12">Procs</a></h1>
 <dl class="item">
-<dt id="parseAll"><a name="parseAll,string,string,char,char,char,bool"></a><pre><span class="Keyword">proc</span> <span class="Identifier">parseAll</span><span class="Operator">*</span><span class="Other">(</span><span class="Identifier">csv</span><span class="Other">:</span> <span class="Identifier">string</span><span class="Other">;</span> <span class="Identifier">filenameOut</span><span class="Other">:</span> <span class="Identifier">string</span><span class="Other">;</span> <span class="Identifier">separator</span><span class="Other">:</span> <span class="Identifier">char</span> <span class="Other">=</span> <span class="CharLit">','</span><span class="Other">;</span> 
+<dt id="parseAll"><a name="parseAll,string,string,char,char,char,bool,bool"></a><pre><span class="Keyword">proc</span> <span class="Identifier">parseAll</span><span class="Operator">*</span><span class="Other">(</span><span class="Identifier">csv</span><span class="Other">:</span> <span class="Identifier">string</span><span class="Other">;</span> <span class="Identifier">filenameOut</span><span class="Other">:</span> <span class="Identifier">string</span><span class="Other">;</span> <span class="Identifier">separator</span><span class="Other">:</span> <span class="Identifier">char</span> <span class="Other">=</span> <span class="CharLit">','</span><span class="Other">;</span> 
                <span class="Identifier">quote</span><span class="Other">:</span> <span class="Identifier">char</span> <span class="Other">=</span> <span class="CharLit">'\&quot;'</span><span class="Other">;</span> <span class="Identifier">escape</span><span class="Other">:</span> <span class="Identifier">char</span> <span class="Other">=</span> <span class="CharLit">'\0'</span><span class="Other">;</span> 
-               <span class="Identifier">skipInitialSpace</span><span class="Other">:</span> <span class="Identifier">bool</span> <span class="Other">=</span> <span class="Identifier">true</span><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">seq</span><span class="Other">[</span><span class="Identifier">seq</span><span class="Other">[</span><span class="Identifier">string</span><span class="Other">]</span><span class="Other">]</span></pre></dt>
+               <span class="Identifier">skipInitialSpace</span><span class="Other">:</span> <span class="Identifier">bool</span> <span class="Other">=</span> <span class="Identifier">false</span><span class="Other">;</span> <span class="Identifier">skipBlankLast</span><span class="Other">:</span> <span class="Identifier">bool</span> <span class="Other">=</span> <span class="Identifier">false</span><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">seq</span><span class="Other">[</span>
+    <span class="Identifier">seq</span><span class="Other">[</span><span class="Identifier">string</span><span class="Other">]</span><span class="Other">]</span></pre></dt>
 <dd>
 <p>Parses the CSV and returns it as a sequence of sequences.</p>
-<p><tt class="docutils literal"><span class="pre">filenameOut</span></tt> is only used for error messages. See Nim's <tt class="docutils literal"><span class="pre">parsecsv</span></tt> docs for information on other parameters.</p>
+<p><tt class="docutils literal"><span class="pre">filenameOut</span></tt> is only used for error messages. If <tt class="docutils literal"><span class="pre">skipBlankLast</span></tt> is true, then if every line ends with <tt class="docutils literal"><span class="pre">separator</span></tt> there will not be a blank field at the end of every row. See Nim's <tt class="docutils literal"><span class="pre">parsecsv</span></tt> docs for information on other parameters.</p>
 
 
 </dd>
-<dt id="readAll"><a name="readAll,string,string,char,char,char,bool"></a><pre><span class="Keyword">proc</span> <span class="Identifier">readAll</span><span class="Operator">*</span><span class="Other">(</span><span class="Identifier">filename</span><span class="Other">:</span> <span class="Identifier">string</span><span class="Other">;</span> <span class="Identifier">filenameOut</span><span class="Other">:</span> <span class="Identifier">string</span><span class="Other">;</span> <span class="Identifier">separator</span><span class="Other">:</span> <span class="Identifier">char</span> <span class="Other">=</span> <span class="CharLit">','</span><span class="Other">;</span> 
+<dt id="readAll"><a name="readAll,string,string,char,char,char,bool,bool"></a><pre><span class="Keyword">proc</span> <span class="Identifier">readAll</span><span class="Operator">*</span><span class="Other">(</span><span class="Identifier">filename</span><span class="Other">:</span> <span class="Identifier">string</span><span class="Other">;</span> <span class="Identifier">filenameOut</span><span class="Other">:</span> <span class="Identifier">string</span><span class="Other">;</span> <span class="Identifier">separator</span><span class="Other">:</span> <span class="Identifier">char</span> <span class="Other">=</span> <span class="CharLit">','</span><span class="Other">;</span> 
               <span class="Identifier">quote</span><span class="Other">:</span> <span class="Identifier">char</span> <span class="Other">=</span> <span class="CharLit">'\&quot;'</span><span class="Other">;</span> <span class="Identifier">escape</span><span class="Other">:</span> <span class="Identifier">char</span> <span class="Other">=</span> <span class="CharLit">'\0'</span><span class="Other">;</span> 
-              <span class="Identifier">skipInitialSpace</span><span class="Other">:</span> <span class="Identifier">bool</span> <span class="Other">=</span> <span class="Identifier">true</span><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">seq</span><span class="Other">[</span><span class="Identifier">seq</span><span class="Other">[</span><span class="Identifier">string</span><span class="Other">]</span><span class="Other">]</span></pre></dt>
+              <span class="Identifier">skipInitialSpace</span><span class="Other">:</span> <span class="Identifier">bool</span> <span class="Other">=</span> <span class="Identifier">false</span><span class="Other">;</span> <span class="Identifier">skipBlankLast</span><span class="Other">:</span> <span class="Identifier">bool</span> <span class="Other">=</span> <span class="Identifier">false</span><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">seq</span><span class="Other">[</span>
+    <span class="Identifier">seq</span><span class="Other">[</span><span class="Identifier">string</span><span class="Other">]</span><span class="Other">]</span></pre></dt>
 <dd>
 <p>Reads the CSV from the file, parses it, and returns it as a sequence of sequences.</p>
-<p><tt class="docutils literal"><span class="pre">filenameOut</span></tt> is only used for error messages. See Nim's <tt class="docutils literal"><span class="pre">parsecsv</span></tt> docs for information on other parameters.</p>
+<p><tt class="docutils literal"><span class="pre">filenameOut</span></tt> is only used for error messages. If <tt class="docutils literal"><span class="pre">skipBlankLast</span></tt> is true, then if every line ends with <tt class="docutils literal"><span class="pre">separator</span></tt> there will not be a blank field at the end of every row. See Nim's <tt class="docutils literal"><span class="pre">parsecsv</span></tt> docs for information on other parameters..</p>
 
 
 </dd>
@@ -1232,7 +1236,7 @@ dt pre > span.Operator ~ span.Identifier, dt pre > span.Operator ~ span.Operator
       <div class="twelve-columns footer">
         <span class="nim-sprite"></span>
         <br>
-        <small>Made with Nim. Generated: 2015-01-01 14:22:27 UTC</small>
+        <small>Made with Nim. Generated: 2015-01-06 12:59:03 UTC</small>
       </div>
     </div>
   </div>

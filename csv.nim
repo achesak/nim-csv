@@ -10,20 +10,41 @@ import streams
 import strutils
 
 
-proc parseAll*(csv : string, filenameOut : string, separator : char = ',', quote : char = '\"', escape : char = '\0', skipInitialSpace : bool = true): seq[seq[string]] = 
+proc checkEnding(csv : string, separator : char): bool = 
+    ## Internal proc to check if the lines end with the separating character.
+    
+    var lines : seq[string] = csv.splitLines()
+    for line in lines:
+        if not line.endsWith("" & separator):
+            return false
+    return true
+
+
+proc parseAll*(csv : string, filenameOut : string, separator : char = ',', quote : char = '\"', escape : char = '\0', skipInitialSpace : bool = false, skipBlankLast : bool = false): seq[seq[string]] = 
     ## Parses the CSV and returns it as a sequence of sequences.
     ##
-    ## ``filenameOut`` is only used for error messages. See Nim's ``parsecsv`` docs for information on other parameters.
+    ## ``filenameOut`` is only used for error messages. If ``skipBlankLast`` is true, then if every line ends with ``separator`` there
+    ## will not be a blank field at the end of every row. See Nim's ``parsecsv`` docs for information on other parameters.
+    
+    # Check if the CSV has a blank field on every row:
+    var newcsv : string = csv
+    if skipBlankLast and checkEnding(csv, separator):
+        
+        # Remove the last separator from every line.
+        var lines : seq[string] = csv.splitLines()
+        for i in 0..high(lines):
+            lines[i] = lines[i][0..len(lines[i])-1]
+        newcsv = lines.join("\n")
     
     # Put the CSV into a stream.
-    var stream : StringStream = newStringStream(csv)
+    var stream : StringStream = newStringStream(newcsv)
     
     # Create the CSV parser.
     var csvParser : CsvParser
     csvParser.open(stream, filenameOut, skipInitialSpace = skipInitialSpace, separator = separator, quote = quote, escape = escape)
     
     # Create the return sequence.
-    var csvSeq = newSeq[seq[string]](len(csv.splitLines()))
+    var csvSeq = newSeq[seq[string]](len(newcsv.splitLines()))
     
     # Loop through the lines and add them to the sequence.
     var c : int = 0
@@ -39,16 +60,18 @@ proc parseAll*(csv : string, filenameOut : string, separator : char = ',', quote
     return csvSeq
 
 
-proc readAll*(filename : string, filenameOut : string, separator : char = ',', quote : char = '\"', escape : char = '\0', skipInitialSpace : bool = true): seq[seq[string]] = 
+proc readAll*(filename : string, filenameOut : string, separator : char = ',', quote : char = '\"', escape : char = '\0', skipInitialSpace : bool = false, skipBlankLast : bool = false): seq[seq[string]] = 
     ## Reads the CSV from the file, parses it, and returns it as a sequence of sequences.
     ##
-    ## ``filenameOut`` is only used for error messages. See Nim's ``parsecsv`` docs for information on other parameters.
+    ## ``filenameOut`` is only used for error messages. If ``skipBlankLast`` is true, then if every line ends with ``separator`` there
+    ## will not be a blank field at the end of every row. See Nim's ``parsecsv`` docs for information on other parameters..
     
     # Get the data from the file.
     var csv : string = readFile(filename)
+    csv = csv.strip(trailing = true)
     
     # Send the string to parseAll() to parse the CSV.
-    return parseAll(csv, filenameOut, separator = separator, quote = quote, escape = escape, skipInitialSpace = skipInitialSpace)
+    return parseAll(csv, filenameOut, separator = separator, quote = quote, escape = escape, skipInitialSpace = skipInitialSpace, skipBlankLast = skipBlankLast)
 
 
 proc stringifyAll*(csv : seq[seq[string]], escapeQuotes : bool = true, quoteAlways : bool = false): string = 
