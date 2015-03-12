@@ -95,7 +95,7 @@ proc stringifyAll*(csv : seq[seq[string]], escapeQuotes : bool = true, quoteAlwa
             # Quote always if the user wants that, otherwise only do it if necessary.
             if quoteAlways:
                 item = "\"" & item & "\""
-            elif item.contains("\"") or item.contains("'"):
+            elif item.contains("\"") or item.contains("'") or item.contains(","):
                 item = "\"" & item & "\""
             else:
                 item = item.quoteIfContainsWhite()
