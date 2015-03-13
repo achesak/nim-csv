@@ -27,11 +27,11 @@ proc parseAll*(csv : string, filenameOut : string, separator : char = ',', quote
     ## will not be a blank field at the end of every row. See Nim's ``parsecsv`` docs for information on other parameters.
     
     # Check if the CSV has a blank field on every row:
-    var newcsv : string = csv
+    var newcsv : string = csv.strip(trailing = true)
     if skipBlankLast and checkEnding(csv, separator):
         
         # Remove the last separator from every line.
-        var lines : seq[string] = csv.splitLines()
+        var lines : seq[string] = newcsv.splitLines()
         for i in 0..high(lines):
             lines[i] = lines[i][0..len(lines[i])-1]
         newcsv = lines.join("\n")
