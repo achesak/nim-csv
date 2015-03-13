@@ -1167,12 +1167,14 @@ dt pre > span.Operator ~ span.Identifier, dt pre > span.Operator ~ span.Operator
          quote: char = &#x27;\&quot;&#x27;; escape: char = &#x27;\0&#x27;; 
          skipInitialSpace: bool = false; skipBlankLast: bool = false): seq[
     seq[string]]"><wbr />read<wbr />All</a></li>
-  <li><a class="reference" href="#stringifyAll,seq[seq[string]],bool,bool"
-    title="stringifyAll*(csv: seq[seq[string]]; escapeQuotes: bool = true; 
-              quoteAlways: bool = false): string"><wbr />stringify<wbr />All</a></li>
-  <li><a class="reference" href="#writeAll,string,seq[seq[string]],bool,bool"
-    title="writeAll*(filename: string; csv: seq[seq[string]]; escapeQuotes: bool = true; 
-          quoteAlways: bool = false): string"><wbr />write<wbr />All</a></li>
+  <li><a class="reference" href="#stringifyAll,seq[seq[string]],string,bool,bool,bool"
+    title="stringifyAll*(csv: seq[seq[string]]; separator: string = &quot;,&quot;; 
+              escapeQuotes: bool = true; quoteAlways: bool = false; 
+              spaceBetweenFields: bool = false): string"><wbr />stringify<wbr />All</a></li>
+  <li><a class="reference" href="#writeAll,string,seq[seq[string]],string,bool,bool,bool"
+    title="writeAll*(filename: string; csv: seq[seq[string]]; separator: string = &quot;,&quot;; 
+          escapeQuotes: bool = true; quoteAlways: bool = false; 
+          spaceBetweenFields: bool = false): string"><wbr />write<wbr />All</a></li>
 
   </ul>
 </li>
@@ -1195,8 +1197,10 @@ dt pre > span.Operator ~ span.Identifier, dt pre > span.Operator ~ span.Operator
                <span class="Identifier">skipInitialSpace</span><span class="Other">:</span> <span class="Identifier">bool</span> <span class="Other">=</span> <span class="Identifier">false</span><span class="Other">;</span> <span class="Identifier">skipBlankLast</span><span class="Other">:</span> <span class="Identifier">bool</span> <span class="Other">=</span> <span class="Identifier">false</span><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">seq</span><span class="Other">[</span>
     <span class="Identifier">seq</span><span class="Other">[</span><span class="Identifier">string</span><span class="Other">]</span><span class="Other">]</span></pre></dt>
 <dd>
-<p>Parses the CSV and returns it as a sequence of sequences.</p>
-<p><tt class="docutils literal"><span class="pre">filenameOut</span></tt> is only used for error messages. If <tt class="docutils literal"><span class="pre">skipBlankLast</span></tt> is true, then if every line ends with <tt class="docutils literal"><span class="pre">separator</span></tt> there will not be a blank field at the end of every row. See Nim's <tt class="docutils literal"><span class="pre">parsecsv</span></tt> docs for information on other parameters.</p>
+Parses the CSV and returns it as a sequence of sequences.<ul class="simple"><li><tt class="docutils literal"><span class="pre">filenameOut</span></tt> is only used for error messages.</li>
+<li>If <tt class="docutils literal"><span class="pre">skipBlankLast</span></tt> is true, then if every line ends with <tt class="docutils literal"><span class="pre">separator</span></tt> there will not be a blank field at the end of every row.</li>
+<li>See Nim's <tt class="docutils literal"><span class="pre">parsecsv</span></tt> docs for information on other parameters.</li>
+</ul>
 
 
 </dd>
@@ -1205,24 +1209,34 @@ dt pre > span.Operator ~ span.Identifier, dt pre > span.Operator ~ span.Operator
               <span class="Identifier">skipInitialSpace</span><span class="Other">:</span> <span class="Identifier">bool</span> <span class="Other">=</span> <span class="Identifier">false</span><span class="Other">;</span> <span class="Identifier">skipBlankLast</span><span class="Other">:</span> <span class="Identifier">bool</span> <span class="Other">=</span> <span class="Identifier">false</span><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">seq</span><span class="Other">[</span>
     <span class="Identifier">seq</span><span class="Other">[</span><span class="Identifier">string</span><span class="Other">]</span><span class="Other">]</span></pre></dt>
 <dd>
-<p>Reads the CSV from the file, parses it, and returns it as a sequence of sequences.</p>
-<p><tt class="docutils literal"><span class="pre">filenameOut</span></tt> is only used for error messages. If <tt class="docutils literal"><span class="pre">skipBlankLast</span></tt> is true, then if every line ends with <tt class="docutils literal"><span class="pre">separator</span></tt> there will not be a blank field at the end of every row. See Nim's <tt class="docutils literal"><span class="pre">parsecsv</span></tt> docs for information on other parameters..</p>
+Reads the CSV from the file, parses it, and returns it as a sequence of sequences.<ul class="simple"><li><tt class="docutils literal"><span class="pre">filenameOut</span></tt> is only used for error messages.</li>
+<li>If <tt class="docutils literal"><span class="pre">skipBlankLast</span></tt> is true, then if every line ends with <tt class="docutils literal"><span class="pre">separator</span></tt> there will not be a blank field at the end of every row.</li>
+<li>See Nim's <tt class="docutils literal"><span class="pre">parsecsv</span></tt> docs for information on other parameters..</li>
+</ul>
 
 
 </dd>
-<dt id="stringifyAll"><a name="stringifyAll,seq[seq[string]],bool,bool"></a><pre><span class="Keyword">proc</span> <span class="Identifier">stringifyAll</span><span class="Operator">*</span><span class="Other">(</span><span class="Identifier">csv</span><span class="Other">:</span> <span class="Identifier">seq</span><span class="Other">[</span><span class="Identifier">seq</span><span class="Other">[</span><span class="Identifier">string</span><span class="Other">]</span><span class="Other">]</span><span class="Other">;</span> <span class="Identifier">escapeQuotes</span><span class="Other">:</span> <span class="Identifier">bool</span> <span class="Other">=</span> <span class="Identifier">true</span><span class="Other">;</span> 
-                   <span class="Identifier">quoteAlways</span><span class="Other">:</span> <span class="Identifier">bool</span> <span class="Other">=</span> <span class="Identifier">false</span><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">string</span></pre></dt>
+<dt id="stringifyAll"><a name="stringifyAll,seq[seq[string]],string,bool,bool,bool"></a><pre><span class="Keyword">proc</span> <span class="Identifier">stringifyAll</span><span class="Operator">*</span><span class="Other">(</span><span class="Identifier">csv</span><span class="Other">:</span> <span class="Identifier">seq</span><span class="Other">[</span><span class="Identifier">seq</span><span class="Other">[</span><span class="Identifier">string</span><span class="Other">]</span><span class="Other">]</span><span class="Other">;</span> <span class="Identifier">separator</span><span class="Other">:</span> <span class="Identifier">string</span> <span class="Other">=</span> <span class="StringLit">&quot;,&quot;</span><span class="Other">;</span> 
+                   <span class="Identifier">escapeQuotes</span><span class="Other">:</span> <span class="Identifier">bool</span> <span class="Other">=</span> <span class="Identifier">true</span><span class="Other">;</span> <span class="Identifier">quoteAlways</span><span class="Other">:</span> <span class="Identifier">bool</span> <span class="Other">=</span> <span class="Identifier">false</span><span class="Other">;</span> 
+                   <span class="Identifier">spaceBetweenFields</span><span class="Other">:</span> <span class="Identifier">bool</span> <span class="Other">=</span> <span class="Identifier">false</span><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">string</span></pre></dt>
 <dd>
-<p>Converts the CSV to a string and returns it.</p>
-<p>If <tt class="docutils literal"><span class="pre">escapeQuotes</span></tt> is <tt class="docutils literal"><span class="pre">true</span></tt>, then <tt class="docutils literal"><span class="pre">&quot;</span></tt> will be replaced with <tt class="docutils literal"><span class="pre">\&quot;</span></tt> and <tt class="docutils literal"><span class="pre">'</span></tt> will be replaced with <tt class="docutils literal"><span class="pre">\'</span></tt>. If <tt class="docutils literal"><span class="pre">quoteAlways</span></tt> is <tt class="docutils literal"><span class="pre">true</span></tt>, it will always add quotes around the item. If it is <tt class="docutils literal"><span class="pre">false</span></tt>, then quotes will only be added if the item contains quotes or whitespace.</p>
+Converts the CSV to a string and returns it.<ul class="simple"><li><tt class="docutils literal"><span class="pre">separator</span></tt> is the string used as the separating character between fields.</li>
+<li>If <tt class="docutils literal"><span class="pre">escapeQuotes</span></tt> is <tt class="docutils literal"><span class="pre">true</span></tt>, <tt class="docutils literal"><span class="pre">&quot;</span></tt> will be replaced with <tt class="docutils literal"><span class="pre">\&quot;</span></tt> and <tt class="docutils literal"><span class="pre">'</span></tt> will be replaced with <tt class="docutils literal"><span class="pre">\'</span></tt>.</li>
+<li>If <tt class="docutils literal"><span class="pre">quoteAlways</span></tt> is <tt class="docutils literal"><span class="pre">true</span></tt>, it will always add quotes around the item. If it is <tt class="docutils literal"><span class="pre">false</span></tt>, quotes will only be added if the item contains quotes, whitespace, or the separator character.</li>
+<li>If <tt class="docutils literal"><span class="pre">spaceBetweenFields</span></tt> is <tt class="docutils literal"><span class="pre">true</span></tt>, an extra space will be added after the separator character.</li>
+</ul>
 
 
 </dd>
-<dt id="writeAll"><a name="writeAll,string,seq[seq[string]],bool,bool"></a><pre><span class="Keyword">proc</span> <span class="Identifier">writeAll</span><span class="Operator">*</span><span class="Other">(</span><span class="Identifier">filename</span><span class="Other">:</span> <span class="Identifier">string</span><span class="Other">;</span> <span class="Identifier">csv</span><span class="Other">:</span> <span class="Identifier">seq</span><span class="Other">[</span><span class="Identifier">seq</span><span class="Other">[</span><span class="Identifier">string</span><span class="Other">]</span><span class="Other">]</span><span class="Other">;</span> 
-               <span class="Identifier">escapeQuotes</span><span class="Other">:</span> <span class="Identifier">bool</span> <span class="Other">=</span> <span class="Identifier">true</span><span class="Other">;</span> <span class="Identifier">quoteAlways</span><span class="Other">:</span> <span class="Identifier">bool</span> <span class="Other">=</span> <span class="Identifier">false</span><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">string</span></pre></dt>
+<dt id="writeAll"><a name="writeAll,string,seq[seq[string]],string,bool,bool,bool"></a><pre><span class="Keyword">proc</span> <span class="Identifier">writeAll</span><span class="Operator">*</span><span class="Other">(</span><span class="Identifier">filename</span><span class="Other">:</span> <span class="Identifier">string</span><span class="Other">;</span> <span class="Identifier">csv</span><span class="Other">:</span> <span class="Identifier">seq</span><span class="Other">[</span><span class="Identifier">seq</span><span class="Other">[</span><span class="Identifier">string</span><span class="Other">]</span><span class="Other">]</span><span class="Other">;</span> <span class="Identifier">separator</span><span class="Other">:</span> <span class="Identifier">string</span> <span class="Other">=</span> <span class="StringLit">&quot;,&quot;</span><span class="Other">;</span> 
+               <span class="Identifier">escapeQuotes</span><span class="Other">:</span> <span class="Identifier">bool</span> <span class="Other">=</span> <span class="Identifier">true</span><span class="Other">;</span> <span class="Identifier">quoteAlways</span><span class="Other">:</span> <span class="Identifier">bool</span> <span class="Other">=</span> <span class="Identifier">false</span><span class="Other">;</span> 
+               <span class="Identifier">spaceBetweenFields</span><span class="Other">:</span> <span class="Identifier">bool</span> <span class="Other">=</span> <span class="Identifier">false</span><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">string</span></pre></dt>
 <dd>
-<p>Converts the CSV to a string and writes it to the file. Returns the CSV as a string.</p>
-<p>If <tt class="docutils literal"><span class="pre">escapeQuotes</span></tt> is <tt class="docutils literal"><span class="pre">true</span></tt>, then <tt class="docutils literal"><span class="pre">&quot;</span></tt> will be replaced with <tt class="docutils literal"><span class="pre">\&quot;</span></tt> and <tt class="docutils literal"><span class="pre">'</span></tt> will be replaced with <tt class="docutils literal"><span class="pre">\'</span></tt>. If <tt class="docutils literal"><span class="pre">quoteAlways</span></tt> is <tt class="docutils literal"><span class="pre">true</span></tt>, it will always add quotes around the item. If it is <tt class="docutils literal"><span class="pre">false</span></tt>, then quotes will only be added if the item contains quotes or whitespace.</p>
+Converts the CSV to a string and writes it to the file. Returns the CSV as a string.<ul class="simple"><li><tt class="docutils literal"><span class="pre">separator</span></tt> is the string used as the separating character between fields.</li>
+<li>If <tt class="docutils literal"><span class="pre">escapeQuotes</span></tt> is <tt class="docutils literal"><span class="pre">true</span></tt>, <tt class="docutils literal"><span class="pre">&quot;</span></tt> will be replaced with <tt class="docutils literal"><span class="pre">\&quot;</span></tt> and <tt class="docutils literal"><span class="pre">'</span></tt> will be replaced with <tt class="docutils literal"><span class="pre">\'</span></tt>.</li>
+<li>If <tt class="docutils literal"><span class="pre">quoteAlways</span></tt> is <tt class="docutils literal"><span class="pre">true</span></tt>, it will always add quotes around the item. If it is <tt class="docutils literal"><span class="pre">false</span></tt>, quotes will only be added if the item contains quotes, whitespace, or the separator character.</li>
+<li>If <tt class="docutils literal"><span class="pre">spaceBetweenFields</span></tt> is <tt class="docutils literal"><span class="pre">true</span></tt>, an extra space will be added after the separator character.</li>
+</ul>
 
 
 </dd>
@@ -1236,7 +1250,7 @@ dt pre > span.Operator ~ span.Identifier, dt pre > span.Operator ~ span.Operator
       <div class="twelve-columns footer">
         <span class="nim-sprite"></span>
         <br>
-        <small>Made with Nim. Generated: 2015-01-06 12:59:03 UTC</small>
+        <small>Made with Nim. Generated: 2015-03-13 10:35:16 UTC</small>
       </div>
     </div>
   </div>

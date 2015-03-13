@@ -23,8 +23,9 @@ proc checkEnding(csv : string, separator : char): bool =
 proc parseAll*(csv : string, filenameOut : string, separator : char = ',', quote : char = '\"', escape : char = '\0', skipInitialSpace : bool = false, skipBlankLast : bool = false): seq[seq[string]] = 
     ## Parses the CSV and returns it as a sequence of sequences.
     ##
-    ## ``filenameOut`` is only used for error messages. If ``skipBlankLast`` is true, then if every line ends with ``separator`` there
-    ## will not be a blank field at the end of every row. See Nim's ``parsecsv`` docs for information on other parameters.
+    ## * ``filenameOut`` is only used for error messages.
+    ## * If ``skipBlankLast`` is true, then if every line ends with ``separator`` there will not be a blank field at the end of every row.
+    ## * See Nim's ``parsecsv`` docs for information on other parameters.
     
     # Check if the CSV has a blank field on every row:
     var newcsv : string = csv.strip(trailing = true)
@@ -63,8 +64,9 @@ proc parseAll*(csv : string, filenameOut : string, separator : char = ',', quote
 proc readAll*(filename : string, filenameOut : string, separator : char = ',', quote : char = '\"', escape : char = '\0', skipInitialSpace : bool = false, skipBlankLast : bool = false): seq[seq[string]] = 
     ## Reads the CSV from the file, parses it, and returns it as a sequence of sequences.
     ##
-    ## ``filenameOut`` is only used for error messages. If ``skipBlankLast`` is true, then if every line ends with ``separator`` there
-    ## will not be a blank field at the end of every row. See Nim's ``parsecsv`` docs for information on other parameters..
+    ## * ``filenameOut`` is only used for error messages.
+    ## * If ``skipBlankLast`` is true, then if every line ends with ``separator`` there will not be a blank field at the end of every row.
+    ## * See Nim's ``parsecsv`` docs for information on other parameters..
     
     # Get the data from the file.
     var csv : string = readFile(filename)
@@ -74,16 +76,19 @@ proc readAll*(filename : string, filenameOut : string, separator : char = ',', q
     return parseAll(csv, filenameOut, separator = separator, quote = quote, escape = escape, skipInitialSpace = skipInitialSpace, skipBlankLast = skipBlankLast)
 
 
-proc stringifyAll*(csv : seq[seq[string]], escapeQuotes : bool = true, quoteAlways : bool = false, spaceBetweenFields : bool = true): string = 
+proc stringifyAll*(csv : seq[seq[string]], separator : string = ",", escapeQuotes : bool = true, quoteAlways : bool = false, spaceBetweenFields : bool = false): string = 
     ## Converts the CSV to a string and returns it.
     ##
-    ## If ``escapeQuotes`` is ``true``, then ``"`` will be replaced with ``\"`` and ``'`` will be replaced with ``\'``. If ``quoteAlways`` is ``true``,
-    ## it will always add quotes around the item. If it is ``false``, then quotes will only be added if the item contains quotes or whitespace.
-    var delimiter: string
+    ## * ``separator`` is the string used as the separating character between fields.
+    ## * If ``escapeQuotes`` is ``true``, ``"`` will be replaced with ``\"`` and ``'`` will be replaced with ``\'``.
+    ## * If ``quoteAlways`` is ``true``, it will always add quotes around the item. If it is ``false``, quotes will only be added if the item contains quotes, whitespace, or the separator character.
+    ## * If ``spaceBetweenFields`` is ``true``, an extra space will be added after the separator character.
+    
+    var delimiter : string
     if spaceBetweenFields:
-      delimiter = ", "
+      delimiter = separator & " "
     else:
-      delimiter = ","
+      delimiter = separator
     
     # Loop through the sequence and append the rows to the string.
     var csvStr : string = ""
@@ -100,7 +105,7 @@ proc stringifyAll*(csv : seq[seq[string]], escapeQuotes : bool = true, quoteAlwa
             # Quote always if the user wants that, otherwise only do it if necessary.
             if quoteAlways:
                 item = "\"" & item & "\""
-            elif item.contains("\"") or item.contains("'") or item.contains(","):
+            elif item.contains("\"") or item.contains("'") or item.contains(separator):
                 item = "\"" & item & "\""
             else:
                 item = item.quoteIfContainsWhite()
@@ -108,7 +113,7 @@ proc stringifyAll*(csv : seq[seq[string]], escapeQuotes : bool = true, quoteAlwa
             # Add the item.
             csvStrRow &= item
             
-            # Only add a comma if it isn't the last item.
+            # Only add a separator if it isn't the last item.
             if j != high(csv[i]):
                 csvStrRow &= delimiter
         
@@ -123,14 +128,16 @@ proc stringifyAll*(csv : seq[seq[string]], escapeQuotes : bool = true, quoteAlwa
     return csvStr
 
 
-proc writeAll*(filename : string, csv : seq[seq[string]], escapeQuotes : bool = true, quoteAlways : bool = false): string = 
+proc writeAll*(filename : string, csv : seq[seq[string]], separator : string = ",", escapeQuotes : bool = true, quoteAlways : bool = false, spaceBetweenFields : bool = false): string = 
     ## Converts the CSV to a string and writes it to the file. Returns the CSV as a string.
     ##
-    ## If ``escapeQuotes`` is ``true``, then ``"`` will be replaced with ``\"`` and ``'`` will be replaced with ``\'``. If ``quoteAlways`` is ``true``,
-    ## it will always add quotes around the item. If it is ``false``, then quotes will only be added if the item contains quotes or whitespace.
+    ## * ``separator`` is the string used as the separating character between fields.
+    ## * If ``escapeQuotes`` is ``true``, ``"`` will be replaced with ``\"`` and ``'`` will be replaced with ``\'``.
+    ## * If ``quoteAlways`` is ``true``, it will always add quotes around the item. If it is ``false``, quotes will only be added if the item contains quotes, whitespace, or the separator character.
+    ## * If ``spaceBetweenFields`` is ``true``, an extra space will be added after the separator character.
     
     # Get the stringified CSV.
-    var csvStr : string = stringifyAll(csv, escapeQuotes = escapeQuotes, quoteAlways = quoteAlways)
+    var csvStr : string = stringifyAll(csv, separator = separator, escapeQuotes = escapeQuotes, quoteAlways = quoteAlways, spaceBetweenFields = spaceBetweenFields)
     
     # Write the CSV to the file.
     writeFile(filename, csvStr)
