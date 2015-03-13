@@ -74,11 +74,16 @@ proc readAll*(filename : string, filenameOut : string, separator : char = ',', q
     return parseAll(csv, filenameOut, separator = separator, quote = quote, escape = escape, skipInitialSpace = skipInitialSpace, skipBlankLast = skipBlankLast)
 
 
-proc stringifyAll*(csv : seq[seq[string]], escapeQuotes : bool = true, quoteAlways : bool = false): string = 
+proc stringifyAll*(csv : seq[seq[string]], escapeQuotes : bool = true, quoteAlways : bool = false, spaceBetweenFields : bool = true): string = 
     ## Converts the CSV to a string and returns it.
     ##
     ## If ``escapeQuotes`` is ``true``, then ``"`` will be replaced with ``\"`` and ``'`` will be replaced with ``\'``. If ``quoteAlways`` is ``true``,
     ## it will always add quotes around the item. If it is ``false``, then quotes will only be added if the item contains quotes or whitespace.
+    var delimiter: string
+    if spaceBetweenFields:
+      delimiter = ", "
+    else:
+      delimiter = ","
     
     # Loop through the sequence and append the rows to the string.
     var csvStr : string = ""
@@ -95,7 +100,7 @@ proc stringifyAll*(csv : seq[seq[string]], escapeQuotes : bool = true, quoteAlwa
             # Quote always if the user wants that, otherwise only do it if necessary.
             if quoteAlways:
                 item = "\"" & item & "\""
-            elif item.contains("\"") or item.contains("'"):
+            elif item.contains("\"") or item.contains("'") or item.contains(","):
                 item = "\"" & item & "\""
             else:
                 item = item.quoteIfContainsWhite()
@@ -105,7 +110,7 @@ proc stringifyAll*(csv : seq[seq[string]], escapeQuotes : bool = true, quoteAlwa
             
             # Only add a comma if it isn't the last item.
             if j != high(csv[i]):
-                csvStrRow &= ", "
+                csvStrRow &= delimiter
         
         # Add the row.
         csvStr &= csvStrRow
