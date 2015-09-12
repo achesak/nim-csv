@@ -6,4 +6,4 @@ description = "procedures for reading, writing, parsing, and stringifying CSV (c
 license = "MIT"
 
 [Deps]
-Requires: "nimrod >= 0.10.2"
+Requires: "nim >= 0.11"
