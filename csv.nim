@@ -34,8 +34,15 @@ proc parseAll*(csv : string, filenameOut : string, separator : char = ',', quote
         # Remove the last separator from every line.
         var lines : seq[string] = newcsv.splitLines()
         for i in 0..high(lines):
-            lines[i] = lines[i][0..len(lines[i])-1]
+            lines[i] = lines[i][0..len(lines[i])-2]
         newcsv = lines.join("\n")
+    
+    # Remember which lines ended with an empty item.
+    var endings : seq[int] = @[]
+    var endlines : seq[string] = newcsv.splitlines()
+    for i in 0..high(endlines):
+        if checkEnding(endlines[i], separator):
+            endings.add(i)
     
     # Put the CSV into a stream.
     var stream : StringStream = newStringStream(newcsv)
@@ -52,6 +59,8 @@ proc parseAll*(csv : string, filenameOut : string, separator : char = ',', quote
     while readRow(csvParser):
         
         var csvSeq2 = newSeq[string](len(csvParser.row))
+        if c in endings:
+            csvSeq2.add("")
         for i in 0..high(csvParser.row):
             csvSeq2[i] = csvParser.row[i]
         csvSeq[c] = csvSeq2
@@ -144,3 +153,6 @@ proc writeAll*(filename : string, csv : seq[seq[string]], separator : string = "
     
     # Return the stringified CSV.
     return csvStr
+
+var s : string = "a,b,c,"
+echo(parseAll(s, "test"))
