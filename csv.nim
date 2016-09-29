@@ -153,6 +153,3 @@ proc writeAll*(filename : string, csv : seq[seq[string]], separator : string = "
     
     # Return the stringified CSV.
     return csvStr
-
-var s : string = "a,b,c,"
-echo(parseAll(s, "test"))
