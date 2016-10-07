@@ -26,10 +26,22 @@ proc parseAll*(csv : string, filenameOut : string, separator : char = ',', quote
     ## * ``filenameOut`` is only used for error messages.
     ## * If ``skipBlankLast`` is true, then if every line ends with ``separator`` there will not be a blank field at the end of every row.
     ## * See Nim's ``parsecsv`` docs for information on other parameters.
+
+    # Clean the CSV: remove blank lines
+    var csvLines : seq[string] = csv.splitLines()
+    var cleanedLines : seq[string] = @[]
+    for line in csvLines:
+        if line.strip() != "":
+            cleanedLines.add(line)
+    var cleanedcsv : string = cleanedLines.join("\n")
+
+    # If there was no data, return nil.
+    if cleanedcsv == nil or cleanedcsv.strip() == "":
+        return nil
     
     # Check if the CSV has a blank field on every row:
-    var newcsv : string = csv.strip(trailing = true)
-    if skipBlankLast and checkEnding(csv, separator):
+    var newcsv : string = cleanedcsv.strip(trailing = true)
+    if skipBlankLast and checkEnding(cleanedcsv, separator):
         
         # Remove the last separator from every line.
         var lines : seq[string] = newcsv.splitLines()
@@ -52,7 +64,7 @@ proc parseAll*(csv : string, filenameOut : string, separator : char = ',', quote
     csvParser.open(stream, filenameOut, skipInitialSpace = skipInitialSpace, separator = separator, quote = quote, escape = escape)
     
     # Create the return sequence.
-    var csvSeq = newSeq[seq[string]](len(newcsv.splitLines()))
+    var csvSeq : seq[seq[string]] = @[]
     
     # Loop through the lines and add them to the sequence.
     var c : int = 0
@@ -63,9 +75,9 @@ proc parseAll*(csv : string, filenameOut : string, separator : char = ',', quote
             csvSeq2.add("")
         for i in 0..high(csvParser.row):
             csvSeq2[i] = csvParser.row[i]
-        csvSeq[c] = csvSeq2
+        csvSeq.add(csvSeq2)
         c += 1
-    
+
     # Return the parsed CSV.
     return csvSeq
 
