@@ -3,7 +3,7 @@ About
 
 nim-csv is a Nim module for working with CSV (comma separated values) files.
 
-See the documentation.html file for documentation.
+Run `nim doc csv.nim` to generate a documentation file.
 
 License
 =======
