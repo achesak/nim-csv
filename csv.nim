@@ -52,7 +52,7 @@ proc parseAll*(
             cleanedLines.add(line)
     var cleanedcsv: string = cleanedLines.join("\n")
 
-    if cleanedcsv == nil or cleanedcsv.strip() == "":
+    if cleanedcsv.strip() == "":
         return csvSeq
     
     # Check if the CSV has a blank field on every row:
